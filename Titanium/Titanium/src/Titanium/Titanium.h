@@ -45,6 +45,8 @@ private:
 class TitaniumMemory
 {
 public:
+	TitaniumInterface& GetDriverInterface() { return iface; }
+
 #ifdef TITANIUM_X86
 	template <typename T>
 	T Read(ULONG pid, ULONG address)

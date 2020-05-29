@@ -16,7 +16,7 @@ The interface files are Titanium.h and Titanium.cpp located in the Titanium sour
 The following code sets two target images and checks until they load after which it prints out their respective base addresses, sizes, and process IDs.
 
 ```cpp
-    TitaniumInterface ti;
+        TitaniumInterface ti;
 
 	std::wstring name1 = L"\\csgo\\bin\\client_panorama.dll";
 	std::wstring name2 = L"\\bin\\engine.dll";

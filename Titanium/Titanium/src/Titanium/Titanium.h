@@ -53,6 +53,7 @@ public:
 	{
 		T val;
 		iface.ReadVirtualMemory(pid, address, &val, sizeof(T));
+		return val;
 	}
 
 	template <typename T>

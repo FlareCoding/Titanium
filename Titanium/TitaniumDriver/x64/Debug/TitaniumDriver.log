@@ -1,0 +1,29 @@
+﻿  Building 'TitaniumDriver' with toolset 'WindowsKernelModeDriver10.0' and the 'Desktop' target platform.
+  Driver.c
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(46,6): warning C4047: 'function': 'PSIZE_T' differs in levels of indirection from 'PSIZE_T *'
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(46,6): warning C4024: 'MmCopyVirtualMemory': different types for formal and actual parameter 7
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(56,1): warning C4047: 'function': 'PSIZE_T' differs in levels of indirection from 'PSIZE_T *'
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(56,1): warning C4024: 'MmCopyVirtualMemory': different types for formal and actual parameter 7
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(70,70): warning C4047: 'function': 'const wchar_t *' differs in levels of indirection from 'wchar_t *[128]'
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(70,70): warning C4024: 'wcsstr': different types for formal and actual parameter 2
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(72,66): warning C4242: '=': conversion from 'ULONG64' to 'ULONG', possible loss of data
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(97,64): warning C4022: 'PsLookupProcessByProcessId': pointer mismatch for actual parameter 1
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(111,64): warning C4022: 'PsLookupProcessByProcessId': pointer mismatch for actual parameter 1
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(128,64): warning C4022: 'PsLookupProcessByProcessId': pointer mismatch for actual parameter 1
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(131,53): warning C4022: 'WriteVirtualProcessMemory': pointer mismatch for actual parameter 2
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(131,69): warning C4022: 'WriteVirtualProcessMemory': pointer mismatch for actual parameter 3
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(142,64): warning C4022: 'PsLookupProcessByProcessId': pointer mismatch for actual parameter 1
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(145,53): warning C4022: 'WriteVirtualProcessMemory': pointer mismatch for actual parameter 2
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(145,69): warning C4022: 'WriteVirtualProcessMemory': pointer mismatch for actual parameter 3
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(183,8): warning C4022: 'PsLookupProcessByProcessId': pointer mismatch for actual parameter 1
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(202,8): warning C4022: 'PsLookupProcessByProcessId': pointer mismatch for actual parameter 1
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(79,38): warning C4100: 'DeviceObject': unreferenced formal parameter
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(240,32): warning C4100: 'DeviceObject': unreferenced formal parameter
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(249,31): warning C4100: 'pDriverObject': unreferenced formal parameter
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(258,68): warning C4100: 'pRegistryPath': unreferenced formal parameter
+  TitaniumDriver.vcxproj -> C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\x64\Debug\TitaniumDriver.sys
+  Done Adding Additional Store
+  Successfully signed: C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\x64\Debug\TitaniumDriver.sys
+  
+  Inf2Cat task was skipped as there were no inf files to process
+  

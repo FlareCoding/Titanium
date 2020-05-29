@@ -1,0 +1,69 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30011.22
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Titanium", "Titanium\Titanium.vcxproj", "{02DB9E41-88B5-489A-B357-EDEF54A0F23F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TitaniumDriver", "TitaniumDriver\TitaniumDriver.vcxproj", "{3ED4E3F8-B91C-4A66-B9FF-E146A981FA7A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|ARM = Debug|ARM
+		Debug|ARM64 = Debug|ARM64
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|ARM = Release|ARM
+		Release|ARM64 = Release|ARM64
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{02DB9E41-88B5-489A-B357-EDEF54A0F23F}.Debug|ARM.ActiveCfg = Release|Win32
+		{02DB9E41-88B5-489A-B357-EDEF54A0F23F}.Debug|ARM.Build.0 = Release|Win32
+		{02DB9E41-88B5-489A-B357-EDEF54A0F23F}.Debug|ARM64.ActiveCfg = Release|Win32
+		{02DB9E41-88B5-489A-B357-EDEF54A0F23F}.Debug|ARM64.Build.0 = Release|Win32
+		{02DB9E41-88B5-489A-B357-EDEF54A0F23F}.Debug|x64.ActiveCfg = Release|Win32
+		{02DB9E41-88B5-489A-B357-EDEF54A0F23F}.Debug|x64.Build.0 = Release|Win32
+		{02DB9E41-88B5-489A-B357-EDEF54A0F23F}.Debug|x86.ActiveCfg = Release|Win32
+		{02DB9E41-88B5-489A-B357-EDEF54A0F23F}.Debug|x86.Build.0 = Release|Win32
+		{02DB9E41-88B5-489A-B357-EDEF54A0F23F}.Release|ARM.ActiveCfg = Release|Win32
+		{02DB9E41-88B5-489A-B357-EDEF54A0F23F}.Release|ARM.Build.0 = Release|Win32
+		{02DB9E41-88B5-489A-B357-EDEF54A0F23F}.Release|ARM64.ActiveCfg = Release|Win32
+		{02DB9E41-88B5-489A-B357-EDEF54A0F23F}.Release|ARM64.Build.0 = Release|Win32
+		{02DB9E41-88B5-489A-B357-EDEF54A0F23F}.Release|x64.ActiveCfg = Release|Win32
+		{02DB9E41-88B5-489A-B357-EDEF54A0F23F}.Release|x64.Build.0 = Release|Win32
+		{02DB9E41-88B5-489A-B357-EDEF54A0F23F}.Release|x86.ActiveCfg = Release|Win32
+		{02DB9E41-88B5-489A-B357-EDEF54A0F23F}.Release|x86.Build.0 = Release|Win32
+		{3ED4E3F8-B91C-4A66-B9FF-E146A981FA7A}.Debug|ARM.ActiveCfg = Release|x64
+		{3ED4E3F8-B91C-4A66-B9FF-E146A981FA7A}.Debug|ARM.Build.0 = Release|x64
+		{3ED4E3F8-B91C-4A66-B9FF-E146A981FA7A}.Debug|ARM.Deploy.0 = Release|x64
+		{3ED4E3F8-B91C-4A66-B9FF-E146A981FA7A}.Debug|ARM64.ActiveCfg = Release|x64
+		{3ED4E3F8-B91C-4A66-B9FF-E146A981FA7A}.Debug|ARM64.Build.0 = Release|x64
+		{3ED4E3F8-B91C-4A66-B9FF-E146A981FA7A}.Debug|ARM64.Deploy.0 = Release|x64
+		{3ED4E3F8-B91C-4A66-B9FF-E146A981FA7A}.Debug|x64.ActiveCfg = Release|x64
+		{3ED4E3F8-B91C-4A66-B9FF-E146A981FA7A}.Debug|x64.Build.0 = Release|x64
+		{3ED4E3F8-B91C-4A66-B9FF-E146A981FA7A}.Debug|x64.Deploy.0 = Release|x64
+		{3ED4E3F8-B91C-4A66-B9FF-E146A981FA7A}.Debug|x86.ActiveCfg = Release|x64
+		{3ED4E3F8-B91C-4A66-B9FF-E146A981FA7A}.Debug|x86.Build.0 = Release|x64
+		{3ED4E3F8-B91C-4A66-B9FF-E146A981FA7A}.Debug|x86.Deploy.0 = Release|x64
+		{3ED4E3F8-B91C-4A66-B9FF-E146A981FA7A}.Release|ARM.ActiveCfg = Release|x64
+		{3ED4E3F8-B91C-4A66-B9FF-E146A981FA7A}.Release|ARM.Build.0 = Release|x64
+		{3ED4E3F8-B91C-4A66-B9FF-E146A981FA7A}.Release|ARM.Deploy.0 = Release|x64
+		{3ED4E3F8-B91C-4A66-B9FF-E146A981FA7A}.Release|ARM64.ActiveCfg = Release|x64
+		{3ED4E3F8-B91C-4A66-B9FF-E146A981FA7A}.Release|ARM64.Build.0 = Release|x64
+		{3ED4E3F8-B91C-4A66-B9FF-E146A981FA7A}.Release|ARM64.Deploy.0 = Release|x64
+		{3ED4E3F8-B91C-4A66-B9FF-E146A981FA7A}.Release|x64.ActiveCfg = Release|x64
+		{3ED4E3F8-B91C-4A66-B9FF-E146A981FA7A}.Release|x64.Build.0 = Release|x64
+		{3ED4E3F8-B91C-4A66-B9FF-E146A981FA7A}.Release|x64.Deploy.0 = Release|x64
+		{3ED4E3F8-B91C-4A66-B9FF-E146A981FA7A}.Release|x86.ActiveCfg = Release|x64
+		{3ED4E3F8-B91C-4A66-B9FF-E146A981FA7A}.Release|x86.Build.0 = Release|x64
+		{3ED4E3F8-B91C-4A66-B9FF-E146A981FA7A}.Release|x86.Deploy.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B1D3192D-6374-46FE-B250-A5BD174D2780}
+	EndGlobalSection
+EndGlobal

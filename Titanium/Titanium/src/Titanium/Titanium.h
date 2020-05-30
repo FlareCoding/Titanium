@@ -2,6 +2,7 @@
 #include <Windows.h>
 
 #include <cstdint>
+#include <string>
 
 #if INTPTR_MAX == INT32_MAX
 #define TITANIUM_X86
@@ -62,8 +63,7 @@ public:
 		iface.WriteVirtualMemory(pid, &value, address, sizeof(T));
 	}
 
-	ULONG FindPatternArray(ULONG pid, ULONG start, ULONG size, const char* mask, int count, ...);
-	ULONG FindPattern(ULONG pid, ULONG start, ULONG size, const char* sig, const char* mask);
+	ULONG PatternScan(ULONG pid, ULONG start, ULONG size, const std::string& pattern);
 #endif
 
 #ifdef TITANIUM_X64
@@ -80,13 +80,13 @@ public:
 		iface.WriteVirtualMemory(pid, &value, address, sizeof(T));
 	}
 
-	ULONG64 FindPatternArray(ULONG pid, ULONG64 start, ULONG64 size, const char* mask, int count, ...);
-	ULONG64 FindPattern(ULONG pid, ULONG64 start, ULONG64 size, const char* sig, const char* mask);
+	ULONG64 PatternScan(ULONG pid, ULONG64 start, ULONG64 size, const std::string& pattern);
 #endif
 
 private:
 	TitaniumInterface iface;
 
 private:
-	bool DataCompare(const BYTE* pData, const BYTE* pMask, const char* pszMask);
+	bool CompareMemory(const BYTE* bData, const BYTE* bMask, const char* szMask);
+	void CreateSignatureAndMask(const std::string& pattern, std::string& signature, std::string& mask);
 };

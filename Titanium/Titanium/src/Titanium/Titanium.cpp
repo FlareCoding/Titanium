@@ -1,4 +1,5 @@
 #include "Titanium.h"
+#include <sstream>
 
 #define TITANIUM_MEMORY_READ_REQUEST_32BIT					CTL_CODE(FILE_DEVICE_UNKNOWN, 0x4554, METHOD_OUT_DIRECT, FILE_ANY_ACCESS)
 #define TITANIUM_MEMORY_WRITE_REQUEST_32BIT					CTL_CODE(FILE_DEVICE_UNKNOWN, 0x4584, METHOD_OUT_DIRECT, FILE_ANY_ACCESS)
@@ -114,40 +115,18 @@ TitaniumTargetImageInfo TitaniumInterface::GetTargetImageInfo(UINT32 index)
 	return info;
 }
 
-ULONG TitaniumMemory::FindPatternArray(ULONG pid, ULONG start, ULONG size, const char* mask, int count, ...)
+ULONG TitaniumMemory::PatternScan(ULONG pid, ULONG start, ULONG size, const std::string& pattern)
 {
-	char* sig = new char[count + 1];
-	va_list ap;
-	va_start(ap, count);
+	std::string sig, mask;
+	CreateSignatureAndMask(pattern, sig, mask);
 
-	for (int i = 0; i < count; i++)
-	{
-		char read = va_arg(ap, char);
-		sig[i] = read;
-	}
-
-	va_end(ap);
-	sig[count] = '\0';
-	return FindPattern(pid, start, size, sig, mask);
-}
-
-ULONG TitaniumMemory::FindPattern(ULONG pid, ULONG start, ULONG size, const char* sig, const char* mask)
-{
 	BYTE* data = new BYTE[size];
-
 	iface.ReadVirtualMemory(pid, start, data, size);
 
-	for (ULONG i = 0; i < size; i++)
-	{
-		if (DataCompare((const BYTE*)(data + i), (const BYTE*)sig, mask))
-		{
-			delete[] sig;
-			delete[] data;
+	for (DWORD i = 0; i < size; i++)
+		if (CompareMemory((const BYTE*)(data + i), (const BYTE*)sig.c_str(), mask.c_str()))
 			return start + i;
-		}
-	}
 
-	delete[] sig;
 	delete[] data;
 	return NULL;
 }
@@ -199,50 +178,60 @@ TitaniumTargetImageInfo TitaniumInterface::GetTargetImageInfo(UINT32 index)
 	return info;
 }
 
-ULONG64 TitaniumMemory::FindPatternArray(ULONG pid, ULONG64 start, ULONG64 size, const char* mask, int count, ...)
+ULONG64 TitaniumMemory::PatternScan(ULONG pid, ULONG64 start, ULONG64 size, const std::string& pattern)
 {
-	char* sig = new char[count + 1];
-	va_list ap;
-	va_start(ap, count);
+	std::string sig, mask;
+	CreateSignatureAndMask(pattern, sig, mask);
 
-	for (int i = 0; i < count; i++)
-	{
-		char read = va_arg(ap, char);
-		sig[i] = read;
-	}
-
-	va_end(ap);
-	sig[count] = '\0';
-	return FindPattern(pid, start, size, sig, mask);
-}
-
-ULONG64 TitaniumMemory::FindPattern(ULONG pid, ULONG64 start, ULONG64 size, const char* sig, const char* mask)
-{
 	BYTE* data = new BYTE[size];
-
 	iface.ReadVirtualMemory(pid, start, data, size);
 
 	for (ULONG64 i = 0; i < size; i++)
-	{
-		if (DataCompare((const BYTE*)(data + i), (const BYTE*)sig, mask))
-		{
-			delete[] sig;
-			delete[] data;
+		if (CompareMemory((const BYTE*)(data + i), (const BYTE*)sig.c_str(), mask.c_str()))
 			return start + i;
-		}
-	}
 
-	delete[] sig;
 	delete[] data;
 	return NULL;
 }
 #endif // TITANIUM_X64
 
-bool TitaniumMemory::DataCompare(const BYTE* pData, const BYTE* pMask, const char* pszMask)
+bool TitaniumMemory::CompareMemory(const BYTE* bData, const BYTE* bMask, const char* szMask)
 {
-	for (; *pszMask; ++pszMask, ++pData, ++pMask)
-		if (*pszMask == 'x' && *pData != *pMask)
+	for (; *szMask; ++szMask, ++bData, ++bMask)
+		if (*szMask == 'x' && *bData != *bMask)
 			return false;
 
-	return (*pszMask == NULL);
+	return (*szMask == NULL);
+}
+
+void TitaniumMemory::CreateSignatureAndMask(const std::string& pattern, std::string& signature, std::string& mask)
+{
+	auto IsHex = [](char c) -> bool {
+		return (c >= '0' && c <= '9') || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
+	};
+
+	char buffer[2];
+	std::stringstream sig_s;
+	std::stringstream mask_s;
+
+	for (size_t i = 0, l = pattern.size() - 1; i < l; i++)
+	{
+		if (IsHex(pattern[i]))
+		{
+			buffer[0] = pattern[i];
+			buffer[1] = (l >= i + 1 && IsHex(pattern[i + 1])) ? pattern[++i] : 0;
+			sig_s << (char)strtol(buffer, nullptr, 16);
+			mask_s << 'x';
+			continue;
+		}
+		else if (pattern[i] == '?' || pattern[i] == '*')
+		{
+			sig_s << "\x90";
+			mask_s << '?';
+			continue;
+		}
+	}
+
+	signature = sig_s.str();
+	mask = mask_s.str();
 }

@@ -15,12 +15,16 @@ C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Drive
 C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(142,64): warning C4022: 'PsLookupProcessByProcessId': pointer mismatch for actual parameter 1
 C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(145,53): warning C4022: 'WriteVirtualProcessMemory': pointer mismatch for actual parameter 2
 C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(145,69): warning C4022: 'WriteVirtualProcessMemory': pointer mismatch for actual parameter 3
-C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(183,8): warning C4022: 'PsLookupProcessByProcessId': pointer mismatch for actual parameter 1
-C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(202,8): warning C4022: 'PsLookupProcessByProcessId': pointer mismatch for actual parameter 1
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(159,63): warning C4047: 'function': 'const wchar_t *' differs in levels of indirection from 'wchar_t *[128]'
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(159,63): warning C4024: 'wcscmp': different types for formal and actual parameter 1
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(177,63): warning C4047: 'function': 'const wchar_t *' differs in levels of indirection from 'wchar_t *[128]'
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(177,63): warning C4024: 'wcscmp': different types for formal and actual parameter 1
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(199,8): warning C4022: 'PsLookupProcessByProcessId': pointer mismatch for actual parameter 1
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(218,8): warning C4022: 'PsLookupProcessByProcessId': pointer mismatch for actual parameter 1
 C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(79,38): warning C4100: 'DeviceObject': unreferenced formal parameter
-C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(240,32): warning C4100: 'DeviceObject': unreferenced formal parameter
-C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(249,31): warning C4100: 'pDriverObject': unreferenced formal parameter
-C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(258,68): warning C4100: 'pRegistryPath': unreferenced formal parameter
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(256,32): warning C4100: 'DeviceObject': unreferenced formal parameter
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(265,31): warning C4100: 'pDriverObject': unreferenced formal parameter
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Driver.c(274,68): warning C4100: 'pRegistryPath': unreferenced formal parameter
   TitaniumDriver.vcxproj -> C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\x64\Release\TitaniumDriver.sys
   Done Adding Additional Store
   Successfully signed: C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\x64\Release\TitaniumDriver.sys

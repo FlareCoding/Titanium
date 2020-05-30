@@ -155,6 +155,14 @@ NTSTATUS IoctlControl(PDEVICE_OBJECT DeviceObject, PIRP Irp)
 	{
 		PTITANIUM_KERNEL_SET_TARGET_IMAGE_REQUEST_32BIT input = (PTITANIUM_KERNEL_SET_TARGET_IMAGE_REQUEST_32BIT)Irp->AssociatedIrp.SystemBuffer;
 
+		// If the existing target name in the slot doesn't match the new name, zero out the pid, base address, and size fields
+		if (wcscmp(s_TargetImages[input->ImageIndex].TargetImageName, (wchar_t*)input->pTargetImageBuffer) != 0)
+		{
+			s_TargetImages[input->ImageIndex].Info.ProcessID = 0;
+			s_TargetImages[input->ImageIndex].Info.ImageBase = 0;
+			s_TargetImages[input->ImageIndex].Info.ImageSize = 0;
+		}
+
 		memcpy_s(s_TargetImages[input->ImageIndex].TargetImageName, input->TargetImageBufferSize, (wchar_t*)input->pTargetImageBuffer, input->TargetImageBufferSize);
 
 		BytesIO = sizeof(PTITANIUM_KERNEL_SET_TARGET_IMAGE_REQUEST_32BIT);
@@ -164,6 +172,14 @@ NTSTATUS IoctlControl(PDEVICE_OBJECT DeviceObject, PIRP Irp)
 	case TITANIUM_SET_TARGET_IMAGE_REQUEST_64BIT:
 	{
 		PTITANIUM_KERNEL_SET_TARGET_IMAGE_REQUEST_64BIT input = (PTITANIUM_KERNEL_SET_TARGET_IMAGE_REQUEST_64BIT)Irp->AssociatedIrp.SystemBuffer;
+
+		// If the existing target name in the slot doesn't match the new name, zero out the pid, base address, and size fields
+		if (wcscmp(s_TargetImages[input->ImageIndex].TargetImageName, (wchar_t*)input->pTargetImageBuffer) != 0)
+		{
+			s_TargetImages[input->ImageIndex].Info.ProcessID = 0;
+			s_TargetImages[input->ImageIndex].Info.ImageBase = 0;
+			s_TargetImages[input->ImageIndex].Info.ImageSize = 0;
+		}
 
 		memcpy_s(s_TargetImages[input->ImageIndex].TargetImageName, input->TargetImageBufferSize, (wchar_t*)input->pTargetImageBuffer, input->TargetImageBufferSize);
 

@@ -76,6 +76,28 @@ void PloadImageNotifyRoutine(
 	}
 }
 
+void PcreateProcessNotifyRoutine(
+	HANDLE ParentId,
+	HANDLE ProcessId,
+	BOOLEAN Create
+)
+{
+	if (!Create)
+	{
+		ULONG64 pid = (ULONG64)((PVOID)ProcessId);
+
+		for (int i = 0; i < MAX_TARGET_IMAGES; i++)
+		{
+			if (pid == s_TargetImages[i].Info.ProcessID)
+			{
+				s_TargetImages[i].Info.ProcessID = 0;
+				s_TargetImages[i].Info.ImageBase = 0;
+				s_TargetImages[i].Info.ImageSize = 0;
+			}
+		}
+	}
+}
+
 NTSTATUS IoctlControl(PDEVICE_OBJECT DeviceObject, PIRP Irp)
 {
 	NTSTATUS Status = 0;
@@ -194,15 +216,6 @@ NTSTATUS IoctlControl(PDEVICE_OBJECT DeviceObject, PIRP Irp)
 	{
 		PTITANIUM_KERNEL_GET_TARGET_IMAGE_INFO_REQUEST_32BIT input = (PTITANIUM_KERNEL_GET_TARGET_IMAGE_INFO_REQUEST_32BIT)Irp->AssociatedIrp.SystemBuffer;
 
-		// Check if process still exists
-		PEPROCESS Process = 0;
-		if (!NT_SUCCESS(PsLookupProcessByProcessId(s_TargetImages[input->ImageIndex].Info.ProcessID, &Process)))
-		{
-			s_TargetImages[input->ImageIndex].Info.ProcessID = 0;
-			s_TargetImages[input->ImageIndex].Info.ImageBase = 0;
-			s_TargetImages[input->ImageIndex].Info.ImageSize = 0;
-		}
-
 		*((TitaniumTargetImageInfo*)input->pTargetImageInfo) = s_TargetImages[input->ImageIndex].Info;
 
 		BytesIO = sizeof(PTITANIUM_KERNEL_GET_TARGET_IMAGE_INFO_REQUEST_32BIT);
@@ -212,15 +225,6 @@ NTSTATUS IoctlControl(PDEVICE_OBJECT DeviceObject, PIRP Irp)
 	case TITANIUM_GET_TARGET_IMAGE_INFO_REQUEST_64BIT:
 	{
 		PTITANIUM_KERNEL_GET_TARGET_IMAGE_INFO_REQUEST_64BIT input = (PTITANIUM_KERNEL_GET_TARGET_IMAGE_INFO_REQUEST_64BIT)Irp->AssociatedIrp.SystemBuffer;
-
-		// Check if process still exists
-		PEPROCESS Process = 0;
-		if (!NT_SUCCESS(PsLookupProcessByProcessId(s_TargetImages[input->ImageIndex].Info.ProcessID, &Process)))
-		{
-			s_TargetImages[input->ImageIndex].Info.ProcessID = 0;
-			s_TargetImages[input->ImageIndex].Info.ImageBase = 0;
-			s_TargetImages[input->ImageIndex].Info.ImageSize = 0;
-		}
 
 		*((TitaniumTargetImageInfo*)input->pTargetImageInfo) = s_TargetImages[input->ImageIndex].Info;
 
@@ -246,6 +250,7 @@ NTSTATUS Unload(PDRIVER_OBJECT pDriverObject)
 {
 	DbgPrint("[+] Titanium Driver Successfully Unloaded [+]\r\n");
 
+	PsSetCreateProcessNotifyRoutine(PcreateProcessNotifyRoutine, TRUE);
 	PsRemoveLoadImageNotifyRoutine(PloadImageNotifyRoutine);
 	IoDeleteSymbolicLink(&dos);
 	IoDeleteDevice(pDriverObject->DeviceObject);
@@ -282,6 +287,7 @@ NTSTATUS DriverEntry(PDRIVER_OBJECT pDriverObject, PUNICODE_STRING pRegistryPath
 	}
 
 	PsSetLoadImageNotifyRoutine(PloadImageNotifyRoutine);
+	PsSetCreateProcessNotifyRoutine(PcreateProcessNotifyRoutine, FALSE);
 
 	RtlInitUnicodeString(&dev, L"\\Device\\titanium");
 	RtlInitUnicodeString(&dos, L"\\DosDevices\\titanium");

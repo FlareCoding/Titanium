@@ -185,6 +185,31 @@ PETHREAD FindAvailableThread(HANDLE ProcessId)
     return Thread;
 }
 
+ULONG64 GetApcStateOffset()
+{
+    PEPROCESS Process = PsGetCurrentProcess();
+    PETHREAD Thread = PsGetCurrentThread();
+
+    PULONG64 ptr = (PULONG64)Thread;
+
+    PKAPC_STATE ApcState = 0;
+    ULONG64 ApcStateOffset = 0;
+
+    // Locate the ApcState structure
+    for (ULONG64 i = 0; i < 512; i++)
+    {
+        if (ptr[i] == (ULONG64)Process)
+        {
+            ApcState = CONTAINING_RECORD(&ptr[i], KAPC_STATE, Process); // Get the actual address of KAPC_STATE
+            ApcStateOffset = (ULONG64)ApcState - (ULONG64)Thread; // Calculate the offset of the ApcState structure
+
+            break;
+        }
+    }
+
+    return ApcStateOffset;
+}
+
 // -------------------------------------------- //
 // -------------------------------------------- //
 // ------------------ PUBLIC ------------------ //
@@ -265,6 +290,10 @@ ULONG64 InjectX64Dll(HANDLE ProcessId, wchar_t* dllpath)
     ContextAddress->DllPath.Buffer = (PWCH)DllPathBufferAddress;
     RtlInitUnicodeString(&ContextAddress->DllPath, ContextAddress->DllPath.Buffer);
 
+    ULONG64 ApcStateOffset = GetApcStateOffset();
+    PKAPC_STATE ApcState = (PKAPC_STATE)((PUCHAR)AvailableThread + ApcStateOffset);
+    ApcState->UserApcPending = TRUE;
+
     PVOID  NormalRoutineAddress = NULL;
     SIZE_T NormalRoutineAllocationSize = (SIZE_T)((ULONG_PTR)NRStubFn - (ULONG_PTR)InjectorAPCNormalRoutine);
 
@@ -295,10 +324,22 @@ ULONG64 InjectX64Dll(HANDLE ProcessId, wchar_t* dllpath)
     LARGE_INTEGER delay;
     delay.QuadPart = -200 * 10000;
 
-    while (!((PTITANIUM_INJECTION_INFO)ContextAddress)->Injected)
-        KeDelayExecutionThread(KernelMode, FALSE, &delay);
+    int retry_count = 0;
+    int max_retries = 10;
 
-    ULONG64 BaseAddress = (ULONG64)((PTITANIUM_INJECTION_INFO)ContextAddress)->DllBase;
+    while (!((PTITANIUM_INJECTION_INFO)ContextAddress)->Injected)
+    {
+        KeDelayExecutionThread(KernelMode, FALSE, &delay);
+        retry_count++;
+
+        if (retry_count >= max_retries)
+            break;
+    }
+
+    ULONG64 BaseAddress = 0;
+
+    if (retry_count < max_retries)
+        BaseAddress = (ULONG64)((PTITANIUM_INJECTION_INFO)ContextAddress)->DllBase;
     
     SIZE_T size = 0;
 

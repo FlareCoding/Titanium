@@ -28,15 +28,14 @@ public:
 #ifdef TITANIUM_X86
 	void ReadVirtualMemory(ULONG ProcessID, ULONG SourceAddr, void* TargetAddr, ULONG Size);
 	void WriteVirtualMemory(ULONG ProcessID, void* SourceAddr, ULONG TargetAddr, ULONG Size);
-	void SetTargetImageName(wchar_t* name, UINT32 length, UINT32 index);
-	TitaniumTargetImageInfo GetTargetImageInfo(UINT32 index);
+	TitaniumTargetImageInfo GetTargetImageInfo(const wchar_t* ProcessName);
 #endif
 
 #ifdef TITANIUM_X64
 	void ReadVirtualMemory(ULONG64 ProcessID, ULONG64 SourceAddr, void* TargetAddr, ULONG64 Size);
 	void WriteVirtualMemory(ULONG64 ProcessID, void* SourceAddr, ULONG64 TargetAddr, ULONG64 Size);
-	void SetTargetImageName(wchar_t* name, UINT32 length, UINT32 index);
-	TitaniumTargetImageInfo GetTargetImageInfo(UINT32 index);
+	TitaniumTargetImageInfo GetTargetImageInfo(const wchar_t* ProcessName);
+	ULONG64 InjectX64DLL(ULONG ProcessID, const wchar_t* DllPath);
 #endif
 
 private:

@@ -7,11 +7,10 @@
 #define TITANIUM_MEMORY_READ_REQUEST_64BIT					CTL_CODE(FILE_DEVICE_UNKNOWN, 0x7554, METHOD_OUT_DIRECT, FILE_ANY_ACCESS)
 #define TITANIUM_MEMORY_WRITE_REQUEST_64BIT					CTL_CODE(FILE_DEVICE_UNKNOWN, 0x7584, METHOD_OUT_DIRECT, FILE_ANY_ACCESS)
 
-#define TITANIUM_SET_TARGET_IMAGE_REQUEST_32BIT				CTL_CODE(FILE_DEVICE_UNKNOWN, 0x4694, METHOD_OUT_DIRECT, FILE_ANY_ACCESS)
-#define TITANIUM_SET_TARGET_IMAGE_REQUEST_64BIT				CTL_CODE(FILE_DEVICE_UNKNOWN, 0x7694, METHOD_OUT_DIRECT, FILE_ANY_ACCESS)
-
 #define TITANIUM_GET_TARGET_IMAGE_INFO_REQUEST_32BIT		CTL_CODE(FILE_DEVICE_UNKNOWN, 0x4310, METHOD_OUT_DIRECT, FILE_ANY_ACCESS)
 #define TITANIUM_GET_TARGET_IMAGE_INFO_REQUEST_64BIT		CTL_CODE(FILE_DEVICE_UNKNOWN, 0x7310, METHOD_OUT_DIRECT, FILE_ANY_ACCESS)
+
+#define TITANIUM_INJECT_X64_DLL_REQUEST_64BIT				CTL_CODE(FILE_DEVICE_UNKNOWN, 0x1923, METHOD_OUT_DIRECT, FILE_ANY_ACCESS)
 
 #ifdef TITANIUM_X86
 typedef struct _TITANIUM_KERNEL_MEMORY_READ_WRITE_REQUEST
@@ -22,16 +21,9 @@ typedef struct _TITANIUM_KERNEL_MEMORY_READ_WRITE_REQUEST
 	ULONG Size;
 } TITANIUM_KERNEL_MEMORY_READ_WRITE_REQUEST, *PTITANIUM_KERNEL_MEMORY_READ_WRITE_REQUEST;
 
-typedef struct _TITANIUM_KERNEL_SET_TARGET_IMAGE_REQUEST
-{
-	UINT32	ImageIndex;
-	ULONG	pTargetImageBuffer;
-	UINT32	TargetImageBufferSize;
-} TITANIUM_KERNEL_SET_TARGET_IMAGE_REQUEST, *PTITANIUM_KERNEL_SET_TARGET_IMAGE_REQUEST;
-
 typedef struct _TITANIUM_KERNEL_GET_TARGET_IMAGE_INFO_REQUEST
 {
-	UINT32	ImageIndex;
+	ULONG	pProcessName;
 	ULONG	pTargetImageInfo;
 } TITANIUM_KERNEL_GET_TARGET_IMAGE_INFO_REQUEST, *PTITANIUM_KERNEL_GET_TARGET_IMAGE_INFO_REQUEST;
 #endif // TITANIUM_X86
@@ -45,18 +37,18 @@ typedef struct _TITANIUM_KERNEL_MEMORY_READ_WRITE_REQUEST
 	ULONG64 Size;
 } TITANIUM_KERNEL_MEMORY_READ_WRITE_REQUEST, *PTITANIUM_KERNEL_MEMORY_READ_WRITE_REQUEST;
 
-typedef struct _TITANIUM_KERNEL_SET_TARGET_IMAGE_REQUEST
-{
-	UINT32	ImageIndex;
-	ULONG64	pTargetImageBuffer;
-	UINT32	TargetImageBufferSize;
-} TITANIUM_KERNEL_SET_TARGET_IMAGE_REQUEST, *PTITANIUM_KERNEL_SET_TARGET_IMAGE_REQUEST;
-
 typedef struct _TITANIUM_KERNEL_GET_TARGET_IMAGE_INFO_REQUEST
 {
-	UINT32	ImageIndex;
+	ULONG64 pProcessName;
 	ULONG64	pTargetImageInfo;
 } TITANIUM_KERNEL_GET_TARGET_IMAGE_INFO_REQUEST, *PTITANIUM_KERNEL_GET_TARGET_IMAGE_INFO_REQUEST;
+
+typedef struct _TITANIUM_KERNEL_INJECT_X64_DLL_REQUEST
+{
+	ULONG	ProcessID;
+	ULONG64 pDLLPathBuffer;
+	ULONG64 pBaseAddress;
+} TITANIUM_KERNEL_INJECT_X64_DLL_REQUEST, *PTITANIUM_KERNEL_INJECT_X64_DLL_REQUEST;
 #endif // TITANIUM_X64
 
 TitaniumInterface::TitaniumInterface()
@@ -92,22 +84,12 @@ void TitaniumInterface::WriteVirtualMemory(ULONG ProcessID, void* SourceAddr, UL
 	DeviceIoControl(hDriver, TITANIUM_MEMORY_WRITE_REQUEST_32BIT, &req, sizeof(TITANIUM_KERNEL_MEMORY_READ_WRITE_REQUEST), 0, 0, 0, 0);
 }
 
-void TitaniumInterface::SetTargetImageName(wchar_t* name, UINT32 length, UINT32 index)
-{
-	TITANIUM_KERNEL_SET_TARGET_IMAGE_REQUEST req;
-	req.ImageIndex = (index < 0 || index > 9) ? 0 : index; // index must be between 0 and 9
-	req.pTargetImageBuffer = (ULONG)name;
-	req.TargetImageBufferSize = ((length > 128) ? 128 : length) * sizeof(wchar_t); // max size is 128
-
-	DeviceIoControl(hDriver, TITANIUM_SET_TARGET_IMAGE_REQUEST_32BIT, &req, sizeof(TITANIUM_KERNEL_SET_TARGET_IMAGE_REQUEST), 0, 0, 0, 0);
-}
-
-TitaniumTargetImageInfo TitaniumInterface::GetTargetImageInfo(UINT32 index)
+TitaniumTargetImageInfo TitaniumInterface::GetTargetImageInfo(const wchar_t* ProcessName)
 {
 	TitaniumTargetImageInfo info;
 
 	TITANIUM_KERNEL_GET_TARGET_IMAGE_INFO_REQUEST req;
-	req.ImageIndex = (index < 0 || index > 9) ? 0 : index; // index must be between 0 and 9
+	req.pProcessName = (ULONG)ProcessName;
 	req.pTargetImageInfo = (ULONG)&info;
 
 	DeviceIoControl(hDriver, TITANIUM_GET_TARGET_IMAGE_INFO_REQUEST_32BIT, &req, sizeof(TITANIUM_KERNEL_GET_TARGET_IMAGE_INFO_REQUEST), 0, 0, 0, 0);
@@ -155,27 +137,31 @@ void TitaniumInterface::WriteVirtualMemory(ULONG64 ProcessID, void* SourceAddr, 
 	DeviceIoControl(hDriver, TITANIUM_MEMORY_WRITE_REQUEST_64BIT, &req, sizeof(TITANIUM_KERNEL_MEMORY_READ_WRITE_REQUEST), 0, 0, 0, 0);
 }
 
-void TitaniumInterface::SetTargetImageName(wchar_t* name, UINT32 length, UINT32 index)
-{
-	TITANIUM_KERNEL_SET_TARGET_IMAGE_REQUEST req;
-	req.ImageIndex = (index < 0 || index > 9) ? 0 : index; // index must be between 0 and 9
-	req.pTargetImageBuffer = (ULONG64)name;
-	req.TargetImageBufferSize = ((length > 128) ? 128 : length) * sizeof(wchar_t); // max size is 128
-
-	DeviceIoControl(hDriver, TITANIUM_SET_TARGET_IMAGE_REQUEST_64BIT, &req, sizeof(TITANIUM_KERNEL_SET_TARGET_IMAGE_REQUEST), 0, 0, 0, 0);
-}
-
-TitaniumTargetImageInfo TitaniumInterface::GetTargetImageInfo(UINT32 index)
+TitaniumTargetImageInfo TitaniumInterface::GetTargetImageInfo(const wchar_t* ProcessName)
 {
 	TitaniumTargetImageInfo info;
 
 	TITANIUM_KERNEL_GET_TARGET_IMAGE_INFO_REQUEST req;
-	req.ImageIndex = (index < 0 || index > 9) ? 0 : index; // index must be between 0 and 9
+	req.pProcessName = (ULONG64)ProcessName;
 	req.pTargetImageInfo = (ULONG64)&info;
 
 	DeviceIoControl(hDriver, TITANIUM_GET_TARGET_IMAGE_INFO_REQUEST_64BIT, &req, sizeof(TITANIUM_KERNEL_GET_TARGET_IMAGE_INFO_REQUEST), 0, 0, 0, 0);
 
 	return info;
+}
+
+ULONG64 TitaniumInterface::InjectX64DLL(ULONG ProcessID, const wchar_t* DllPath)
+{
+	ULONG64 BaseAddress = 0;
+
+	TITANIUM_KERNEL_INJECT_X64_DLL_REQUEST req;
+	req.ProcessID = ProcessID;
+	req.pDLLPathBuffer = (ULONG64)DllPath;
+	req.pBaseAddress = (ULONG64)&BaseAddress;
+
+	DeviceIoControl(hDriver, TITANIUM_INJECT_X64_DLL_REQUEST_64BIT, &req, sizeof(TITANIUM_KERNEL_INJECT_X64_DLL_REQUEST), 0, 0, 0, 0);
+
+	return BaseAddress;
 }
 
 ULONG64 TitaniumMemory::PatternScan(ULONG pid, ULONG64 start, ULONG64 size, const std::string& pattern)

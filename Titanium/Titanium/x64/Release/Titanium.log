@@ -1,0 +1,7 @@
+﻿  main.cpp
+  Titanium.cpp
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 158 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  Titanium.vcxproj -> C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\x64\Release\Titanium.exe

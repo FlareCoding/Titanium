@@ -1,28 +1,20 @@
-#include <ntddk.h>
-#include <wdm.h>
+#include "Injection.h"
 #include "IoctlStructs.h"
 
 PDEVICE_OBJECT pDeviceObject;
 UNICODE_STRING dev, dos; // driver registration path
 
-#define MAX_TARGET_IMAGES 10
+LIST_ENTRY TitaniumProcessInformationListHead;
+#define TITANIUM_PROCESS_INFO_MEMORY_TAG ' TII'
 
 typedef struct _TitaniumTargetImageInfo
 {
+	LIST_ENTRY  ListEntry;
+	wchar_t*	Name[512];
 	ULONG		ProcessID;
 	ULONG64		ImageBase;
 	ULONG64		ImageSize;
-} TitaniumTargetImageInfo;
-
-typedef struct _TargetImage
-{
-	// Image name to be looking for in the LoadImageNotifyRoutine
-	wchar_t* TargetImageName[128];
-
-	TitaniumTargetImageInfo Info;
-} TargetImage;
-
-static TargetImage s_TargetImages[MAX_TARGET_IMAGES] = { 0 };
+} TitaniumTargetImageInfo, *PTitaniumTargetImageInfo;
 
 extern NTSTATUS NTAPI MmCopyVirtualMemory
 (
@@ -39,6 +31,65 @@ extern NTSTATUS PsLookupProcessByProcessId(
 	HANDLE ProcessId,
 	PEPROCESS* Process
 );
+
+PTitaniumTargetImageInfo CreateTitaniumProcessInfo(HANDLE ProcessId, wchar_t* Name)
+{
+	PTitaniumTargetImageInfo Info = ExAllocatePoolWithTag(NonPagedPoolNx, sizeof(TitaniumTargetImageInfo), TITANIUM_PROCESS_INFO_MEMORY_TAG);
+
+	RtlZeroMemory(Info, sizeof(TitaniumTargetImageInfo));
+	Info->ProcessID = ProcessId;
+
+	wcscpy(Info->Name, Name);
+
+	InsertTailList(&TitaniumProcessInformationListHead, &Info->ListEntry);
+
+	return Info;
+}
+
+PTitaniumTargetImageInfo FindTitaniumProcessInfoByPID(HANDLE ProcessID)
+{
+	PLIST_ENTRY NextEntry = TitaniumProcessInformationListHead.Flink;
+
+	while (NextEntry != &TitaniumProcessInformationListHead)
+	{
+		PTitaniumTargetImageInfo ProcInfo = CONTAINING_RECORD(NextEntry, TitaniumTargetImageInfo, ListEntry);
+
+		if (ProcInfo->ProcessID == ProcessID)
+			return ProcInfo;
+
+		NextEntry = NextEntry->Flink;
+	}
+
+	return NULL;
+}
+
+PTitaniumTargetImageInfo FindTitaniumProcessInfoByName(wchar_t* ProcessName)
+{
+	PLIST_ENTRY NextEntry = TitaniumProcessInformationListHead.Flink;
+
+	while (NextEntry != &TitaniumProcessInformationListHead)
+	{
+		PTitaniumTargetImageInfo ProcInfo = CONTAINING_RECORD(NextEntry, TitaniumTargetImageInfo, ListEntry);
+
+		if (wcsstr(ProcInfo->Name, ProcessName))
+			return ProcInfo;
+
+		NextEntry = NextEntry->Flink;
+	}
+
+	return NULL;
+}
+
+VOID RemoveTitaniumProcessInfo(HANDLE ProcessId)
+{
+	PTitaniumTargetImageInfo Info = FindTitaniumProcessInfoByPID(ProcessId);
+
+	if (Info)
+	{
+		RemoveEntryList(&Info->ListEntry);
+		ExFreePoolWithTag(Info, TITANIUM_PROCESS_INFO_MEMORY_TAG);
+	}
+}
 
 NTSTATUS ReadVirtualProcessMemory(PEPROCESS Process, PVOID SourceAddress, PVOID TargetAddress, SIZE_T Size)
 {
@@ -65,15 +116,15 @@ void PloadImageNotifyRoutine(
 	PIMAGE_INFO ImageInfo
 )
 {
-	for (int i = 0; i < MAX_TARGET_IMAGES; i++)
-	{
-		if (wcsstr(FullImageName->Buffer, s_TargetImages[i].TargetImageName))
-		{
-			s_TargetImages[i].Info.ProcessID = (ULONG64)((PVOID)ProcessId);
-			s_TargetImages[i].Info.ImageBase = (ULONG64)(ImageInfo->ImageBase);
-			s_TargetImages[i].Info.ImageSize = (ULONG64)(ImageInfo->ImageSize);
-		}
-	}
+	PTitaniumTargetImageInfo ProcessInfo = FindTitaniumProcessInfoByName(FullImageName->Buffer);
+
+	if (!ProcessInfo)
+		ProcessInfo = CreateTitaniumProcessInfo(ProcessId, FullImageName->Buffer);
+
+	ProcessInfo->ImageBase = (ULONG64)(ImageInfo->ImageBase);
+	ProcessInfo->ImageSize = (ULONG64)(ImageInfo->ImageSize);
+
+	Injector_OnLoadImageNotifyRoutine(FullImageName, ProcessId, ImageInfo);
 }
 
 void PcreateProcessNotifyRoutine(
@@ -84,18 +135,20 @@ void PcreateProcessNotifyRoutine(
 {
 	if (!Create)
 	{
-		ULONG64 pid = (ULONG64)((PVOID)ProcessId);
-
-		for (int i = 0; i < MAX_TARGET_IMAGES; i++)
-		{
-			if (pid == s_TargetImages[i].Info.ProcessID)
-			{
-				s_TargetImages[i].Info.ProcessID = 0;
-				s_TargetImages[i].Info.ImageBase = 0;
-				s_TargetImages[i].Info.ImageSize = 0;
-			}
-		}
+		while (FindTitaniumProcessInfoByPID(ProcessId))
+			RemoveTitaniumProcessInfo(ProcessId);
 	}
+
+	Injector_OnProcessCreateRoutine(ParentId, ProcessId, Create);
+}
+
+void PcreateThreadNotifyRoutine(
+	HANDLE ProcessId,
+	HANDLE ThreadId,
+	BOOLEAN Create
+)
+{
+	if (!Create) return;
 }
 
 NTSTATUS IoctlControl(PDEVICE_OBJECT DeviceObject, PIRP Irp)
@@ -170,45 +223,6 @@ NTSTATUS IoctlControl(PDEVICE_OBJECT DeviceObject, PIRP Irp)
 		Status = STATUS_SUCCESS;
 		break;
 	}
-		// ============================================== //
-		// ============ Setting Target Image ============ //
-		// ============================================== //
-	case TITANIUM_SET_TARGET_IMAGE_REQUEST_32BIT:
-	{
-		PTITANIUM_KERNEL_SET_TARGET_IMAGE_REQUEST_32BIT input = (PTITANIUM_KERNEL_SET_TARGET_IMAGE_REQUEST_32BIT)Irp->AssociatedIrp.SystemBuffer;
-
-		// If the existing target name in the slot doesn't match the new name, zero out the pid, base address, and size fields
-		if (wcscmp(s_TargetImages[input->ImageIndex].TargetImageName, (wchar_t*)input->pTargetImageBuffer) != 0)
-		{
-			s_TargetImages[input->ImageIndex].Info.ProcessID = 0;
-			s_TargetImages[input->ImageIndex].Info.ImageBase = 0;
-			s_TargetImages[input->ImageIndex].Info.ImageSize = 0;
-		}
-
-		memcpy_s(s_TargetImages[input->ImageIndex].TargetImageName, input->TargetImageBufferSize, (wchar_t*)input->pTargetImageBuffer, input->TargetImageBufferSize);
-
-		BytesIO = sizeof(PTITANIUM_KERNEL_SET_TARGET_IMAGE_REQUEST_32BIT);
-		Status = STATUS_SUCCESS;
-		break;
-	}
-	case TITANIUM_SET_TARGET_IMAGE_REQUEST_64BIT:
-	{
-		PTITANIUM_KERNEL_SET_TARGET_IMAGE_REQUEST_64BIT input = (PTITANIUM_KERNEL_SET_TARGET_IMAGE_REQUEST_64BIT)Irp->AssociatedIrp.SystemBuffer;
-
-		// If the existing target name in the slot doesn't match the new name, zero out the pid, base address, and size fields
-		if (wcscmp(s_TargetImages[input->ImageIndex].TargetImageName, (wchar_t*)input->pTargetImageBuffer) != 0)
-		{
-			s_TargetImages[input->ImageIndex].Info.ProcessID = 0;
-			s_TargetImages[input->ImageIndex].Info.ImageBase = 0;
-			s_TargetImages[input->ImageIndex].Info.ImageSize = 0;
-		}
-
-		memcpy_s(s_TargetImages[input->ImageIndex].TargetImageName, input->TargetImageBufferSize, (wchar_t*)input->pTargetImageBuffer, input->TargetImageBufferSize);
-
-		BytesIO = sizeof(PTITANIUM_KERNEL_SET_TARGET_IMAGE_REQUEST_64BIT);
-		Status = STATUS_SUCCESS;
-		break;
-	}
 		// ====================================================== //
 		// ============ Retrieving Target Image Info ============ //
 		// ====================================================== //
@@ -216,7 +230,16 @@ NTSTATUS IoctlControl(PDEVICE_OBJECT DeviceObject, PIRP Irp)
 	{
 		PTITANIUM_KERNEL_GET_TARGET_IMAGE_INFO_REQUEST_32BIT input = (PTITANIUM_KERNEL_GET_TARGET_IMAGE_INFO_REQUEST_32BIT)Irp->AssociatedIrp.SystemBuffer;
 
-		*((TitaniumTargetImageInfo*)input->pTargetImageInfo) = s_TargetImages[input->ImageIndex].Info;
+		PTitaniumTargetImageInfo Info = FindTitaniumProcessInfoByName((PVOID)input->pProcessName);
+		if (Info)
+		{
+			UsermodeTitaniumTargetImageInfo UsermodeInfo;
+			UsermodeInfo.ProcessID = Info->ProcessID;
+			UsermodeInfo.ImageBase = Info->ImageBase;
+			UsermodeInfo.ImageSize = Info->ImageSize;
+
+			*((UsermodeTitaniumTargetImageInfo*)input->pTargetImageInfo) = UsermodeInfo;
+		}
 
 		BytesIO = sizeof(PTITANIUM_KERNEL_GET_TARGET_IMAGE_INFO_REQUEST_32BIT);
 		Status = STATUS_SUCCESS;
@@ -226,9 +249,35 @@ NTSTATUS IoctlControl(PDEVICE_OBJECT DeviceObject, PIRP Irp)
 	{
 		PTITANIUM_KERNEL_GET_TARGET_IMAGE_INFO_REQUEST_64BIT input = (PTITANIUM_KERNEL_GET_TARGET_IMAGE_INFO_REQUEST_64BIT)Irp->AssociatedIrp.SystemBuffer;
 
-		*((TitaniumTargetImageInfo*)input->pTargetImageInfo) = s_TargetImages[input->ImageIndex].Info;
+		PTitaniumTargetImageInfo Info = FindTitaniumProcessInfoByName((PVOID)input->pProcessName);
+		if (Info)
+		{
+			UsermodeTitaniumTargetImageInfo UsermodeInfo;
+			UsermodeInfo.ProcessID = Info->ProcessID;
+			UsermodeInfo.ImageBase = Info->ImageBase;
+			UsermodeInfo.ImageSize = Info->ImageSize;
+
+			*((UsermodeTitaniumTargetImageInfo*)input->pTargetImageInfo) = UsermodeInfo;
+		}
 
 		BytesIO = sizeof(PTITANIUM_KERNEL_GET_TARGET_IMAGE_INFO_REQUEST_64BIT);
+		Status = STATUS_SUCCESS;
+		break;
+	}
+		// ====================================================== //
+		// ==================== DLL Injection =================== //
+		// ====================================================== //
+	case TITANIUM_INJECT_X64_DLL_REQUEST_64BIT:
+	{
+		PTITANIUM_KERNEL_INJECT_X64_DLL_REQUEST_64BIT input = (PTITANIUM_KERNEL_INJECT_X64_DLL_REQUEST_64BIT)Irp->AssociatedIrp.SystemBuffer;
+
+		wchar_t LocalDLLPathBuffer[512];
+		wcscpy(LocalDLLPathBuffer, (PVOID)input->pDLLPathBuffer);
+
+		ULONG64 BaseAddress = InjectX64Dll(input->ProcessID, LocalDLLPathBuffer);
+		*((ULONG64*)input->pBaseAddress) = BaseAddress;
+
+		BytesIO = sizeof(PTITANIUM_KERNEL_INJECT_X64_DLL_REQUEST_64BIT);
 		Status = STATUS_SUCCESS;
 		break;
 	}
@@ -250,6 +299,7 @@ NTSTATUS Unload(PDRIVER_OBJECT pDriverObject)
 {
 	DbgPrint("[+] Titanium Driver Successfully Unloaded [+]\r\n");
 
+	PsRemoveCreateThreadNotifyRoutine(PcreateThreadNotifyRoutine);
 	PsSetCreateProcessNotifyRoutine(PcreateProcessNotifyRoutine, TRUE);
 	PsRemoveLoadImageNotifyRoutine(PloadImageNotifyRoutine);
 	IoDeleteSymbolicLink(&dos);
@@ -280,14 +330,12 @@ NTSTATUS DriverEntry(PDRIVER_OBJECT pDriverObject, PUNICODE_STRING pRegistryPath
 {
 	DbgPrint("[+] Titanium Driver Entry [+]\r\n");
 
-	for (int i = 0; i < MAX_TARGET_IMAGES; i++)
-	{
-		RtlZeroMemory(&s_TargetImages[i], sizeof(TargetImage));
-		memcpy_s(s_TargetImages[i].TargetImageName, 11, L"noimgloaded", 11);
-	}
+	InitializeListHead(&TitaniumProcessInformationListHead);
+	Injector_InitializeInjectionInfo();
 
 	PsSetLoadImageNotifyRoutine(PloadImageNotifyRoutine);
 	PsSetCreateProcessNotifyRoutine(PcreateProcessNotifyRoutine, FALSE);
+	PsSetCreateThreadNotifyRoutine(PcreateThreadNotifyRoutine);
 
 	RtlInitUnicodeString(&dev, L"\\Device\\titanium");
 	RtlInitUnicodeString(&dos, L"\\DosDevices\\titanium");

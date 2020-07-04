@@ -16,41 +16,36 @@ The interface files are Titanium.h and Titanium.cpp located in the Titanium sour
 The following code sets two target images and checks until they load after which it prints out their respective base addresses, sizes, and process IDs.
 
 ```cpp
-        TitaniumInterface ti;
+int main()
+{
+	TitaniumInterface ti;
 
-	std::wstring name1 = L"\\csgo\\bin\\client_panorama.dll";
-	std::wstring name2 = L"\\bin\\engine.dll";
-
-	ti.SetTargetImageName((wchar_t*)name1.c_str(), name1.size(), 0);
-	printf("\nTarget Image [%i] set to: %ws\n", 0, name1.c_str());
-
-	ti.SetTargetImageName((wchar_t*)name2.c_str(), name2.size(), 1);
-	printf("Target Image [%i] set to: %ws\n\n", 1, name2.c_str());
+	std::wstring name = L"Sandbox.exe";
 
 	ULONG pid = 0;
 	while (!pid)
 	{
-		auto client_info = ti.GetTargetImageInfo(0);
+		auto module = ti.GetTargetImageInfo(name.c_str());
+		pid = module.ProcessID;
 
-		std::cout << "Image Info 0 (Client):\n";
-		std::cout << "    PID    : " << client_info.ProcessID << "\n";
-		std::cout << "    Base   : " << client_info.ImageBase << "\n";
-		std::cout << "    Size   : " << client_info.ImageSize << "\n\n";
-
-		auto engine_info = ti.GetTargetImageInfo(1);
-		std::cout << "Image Info 1 (Engine):\n";
-		std::cout << "    PID    : " << engine_info.ProcessID << "\n";
-		std::cout << "    Base   : " << engine_info.ImageBase << "\n";
-		std::cout << "    Size   : " << engine_info.ImageSize << "\n";
-
-		std::cout << "\n-------------------------\n";
-		std::this_thread::sleep_for(std::chrono::seconds(1));
-
-		pid = client_info.ProcessID;
+		if (pid == 0) std::this_thread::sleep_for(std::chrono::seconds(1));
 	}
+
+	auto module = ti.GetTargetImageInfo(name.c_str());
+	std::cout << "Image Info 0:\n";
+	std::cout << "    PID    : " << module.ProcessID << "\n";
+	std::cout << "    Base   : " << module.ImageBase << "\n";
+	std::cout << "    Size   : " << module.ImageSize << "\n";
+	std::cout << "\n-------------------------\n\n";
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+	ULONG64 base = ti.InjectX64DLL(module.ProcessID, L"C:\\Users\\alber\\Desktop\\TestDLL.dll");
+	std::cout << "DLL Injected at 0x" << std::hex << base << std::dec << "\n";
 
 	system("pause");
 	return 0;
+}
 ```
 
 ## Contributing

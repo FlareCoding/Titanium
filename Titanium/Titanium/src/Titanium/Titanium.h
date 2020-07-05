@@ -36,6 +36,7 @@ public:
 	void WriteVirtualMemory(ULONG64 ProcessID, void* SourceAddr, ULONG64 TargetAddr, ULONG64 Size);
 	TitaniumTargetImageInfo GetTargetImageInfo(const wchar_t* ProcessName);
 	ULONG64 InjectX64DLL(ULONG ProcessID, const wchar_t* DllPath);
+	ULONG64 InjectX86DLL(ULONG ProcessID, const wchar_t* DllPath);
 #endif
 
 private:

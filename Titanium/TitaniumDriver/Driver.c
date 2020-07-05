@@ -269,7 +269,7 @@ NTSTATUS IoctlControl(PDEVICE_OBJECT DeviceObject, PIRP Irp)
 		// ====================================================== //
 	case TITANIUM_INJECT_X64_DLL_REQUEST_64BIT:
 	{
-		PTITANIUM_KERNEL_INJECT_X64_DLL_REQUEST_64BIT input = (PTITANIUM_KERNEL_INJECT_X64_DLL_REQUEST_64BIT)Irp->AssociatedIrp.SystemBuffer;
+		PTITANIUM_KERNEL_INJECT_DLL_REQUEST_64BIT input = (PTITANIUM_KERNEL_INJECT_DLL_REQUEST_64BIT)Irp->AssociatedIrp.SystemBuffer;
 
 		wchar_t LocalDLLPathBuffer[512];
 		wcscpy(LocalDLLPathBuffer, (PVOID)input->pDLLPathBuffer);
@@ -277,7 +277,21 @@ NTSTATUS IoctlControl(PDEVICE_OBJECT DeviceObject, PIRP Irp)
 		ULONG64 BaseAddress = InjectX64Dll(input->ProcessID, LocalDLLPathBuffer);
 		*((ULONG64*)input->pBaseAddress) = BaseAddress;
 
-		BytesIO = sizeof(PTITANIUM_KERNEL_INJECT_X64_DLL_REQUEST_64BIT);
+		BytesIO = sizeof(PTITANIUM_KERNEL_INJECT_DLL_REQUEST_64BIT);
+		Status = STATUS_SUCCESS;
+		break;
+	}
+	case TITANIUM_INJECT_X86_DLL_REQUEST_64BIT:
+	{
+		PTITANIUM_KERNEL_INJECT_DLL_REQUEST_64BIT input = (PTITANIUM_KERNEL_INJECT_DLL_REQUEST_64BIT)Irp->AssociatedIrp.SystemBuffer;
+
+		wchar_t LocalDLLPathBuffer[512];
+		wcscpy(LocalDLLPathBuffer, (PVOID)input->pDLLPathBuffer);
+
+		ULONG64 BaseAddress = InjectX86Dll(input->ProcessID, LocalDLLPathBuffer);
+		*((ULONG64*)input->pBaseAddress) = BaseAddress;
+
+		BytesIO = sizeof(PTITANIUM_KERNEL_INJECT_DLL_REQUEST_64BIT);
 		Status = STATUS_SUCCESS;
 		break;
 	}

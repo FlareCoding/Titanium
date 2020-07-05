@@ -2,13 +2,13 @@
 C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\TitaniumDriver.vcxproj(221,5): warning MSB4011: "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\BuildCustomizations\masm.targets" cannot be imported again. It was already imported at "C:\Program Files (x86)\Windows Kits\10\build\WindowsDriver.common.targets (1878,3)". This is most likely a build authoring error. This subsequent import will be ignored. 
   Building 'TitaniumDriver' with toolset 'WindowsKernelModeDriver10.0' and the 'Desktop' target platform.
   Injection.c
-C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Injection.c(113,73): warning C4100: 'arg4': unreferenced formal parameter
-C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Injection.c(113,61): warning C4100: 'arg3': unreferenced formal parameter
-C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Injection.c(113,49): warning C4100: 'arg2': unreferenced formal parameter
-C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Injection.c(113,37): warning C4100: 'arg1': unreferenced formal parameter
-C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Injection.c(118,67): warning C4100: 'SysArg2': unreferenced formal parameter
-C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Injection.c(118,52): warning C4100: 'SysArg1': unreferenced formal parameter
-C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Injection.c(310,61): warning C4152: nonstandard extension, function/data pointer conversion in expression
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Injection.c(140,73): warning C4100: 'arg4': unreferenced formal parameter
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Injection.c(140,61): warning C4100: 'arg3': unreferenced formal parameter
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Injection.c(140,49): warning C4100: 'arg2': unreferenced formal parameter
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Injection.c(140,37): warning C4100: 'arg1': unreferenced formal parameter
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Injection.c(145,67): warning C4100: 'SysArg2': unreferenced formal parameter
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Injection.c(145,52): warning C4100: 'SysArg1': unreferenced formal parameter
+C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Injection.c(354,61): warning C4152: nonstandard extension, function/data pointer conversion in expression
   TitaniumDriver.vcxproj -> C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\x64\Release\TitaniumDriver.sys
 C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\TitaniumDriver.vcxproj(113,5): warning MSB4011: "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\BuildCustomizations\masm.props" cannot be imported again. It was already imported at "C:\Program Files (x86)\Windows Kits\10\build\WindowsDriver.Shared.props (352,3)". This is most likely a build authoring error. This subsequent import will be ignored. 
 C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\TitaniumDriver.vcxproj(221,5): warning MSB4011: "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\BuildCustomizations\masm.targets" cannot be imported again. It was already imported at "C:\Program Files (x86)\Windows Kits\10\build\WindowsDriver.common.targets (1878,3)". This is most likely a build authoring error. This subsequent import will be ignored. 

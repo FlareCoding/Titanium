@@ -6,6 +6,7 @@ typedef struct _TITANIUM_INJECTION_INFO
 	LIST_ENTRY ListEntry;
 	HANDLE ProcessId;
 	PLDR_LOAD_DLL LdrLoadDllRoutine;
+	BOOLEAN IsProcessWow64;
 	UNICODE_STRING DllPath;
 	PVOID DllBase; // If successfully injected, will be the address of the injected dll
 	BOOLEAN Injected; // Injection status
@@ -16,3 +17,4 @@ VOID Injector_OnLoadImageNotifyRoutine(PUNICODE_STRING FullImageName, HANDLE Pro
 VOID Injector_OnProcessCreateRoutine(HANDLE ParentId, HANDLE ProcessId, BOOLEAN Create);
 
 ULONG64 InjectX64Dll(HANDLE ProcessId, wchar_t* dllpath);
+ULONG64 InjectX86Dll(HANDLE ProcessId, wchar_t* dllpath);

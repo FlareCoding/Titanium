@@ -13,7 +13,7 @@ The interface files are Titanium.h and Titanium.cpp located in the Titanium sour
 
 ## Sample Code
 
-The following code sets two target images and checks until they load after which it prints out their respective base addresses, sizes, and process IDs.
+The following code waits until Sandbox.exe image loads, prints out the base address and module size, and injects a dll using APC injection.
 
 ```cpp
 int main()

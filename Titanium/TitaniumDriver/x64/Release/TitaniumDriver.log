@@ -1,21 +1,51 @@
-﻿C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\TitaniumDriver.vcxproj(113,5): warning MSB4011: "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\BuildCustomizations\masm.props" cannot be imported again. It was already imported at "C:\Program Files (x86)\Windows Kits\10\build\WindowsDriver.Shared.props (352,3)". This is most likely a build authoring error. This subsequent import will be ignored. 
-C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\TitaniumDriver.vcxproj(221,5): warning MSB4011: "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\BuildCustomizations\masm.targets" cannot be imported again. It was already imported at "C:\Program Files (x86)\Windows Kits\10\build\WindowsDriver.common.targets (1878,3)". This is most likely a build authoring error. This subsequent import will be ignored. 
+﻿C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\TitaniumDriver.vcxproj(113,5): warning MSB4011: "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\BuildCustomizations\masm.props" cannot be imported again. It was already imported at "C:\Program Files (x86)\Windows Kits\10\build\WindowsDriver.Shared.props (352,3)". This is most likely a build authoring error. This subsequent import will be ignored. 
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\TitaniumDriver.vcxproj(221,5): warning MSB4011: "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\BuildCustomizations\masm.targets" cannot be imported again. It was already imported at "C:\Program Files (x86)\Windows Kits\10\build\WindowsDriver.common.targets (1878,3)". This is most likely a build authoring error. This subsequent import will be ignored. 
   Building 'TitaniumDriver' with toolset 'WindowsKernelModeDriver10.0' and the 'Desktop' target platform.
+  Driver.c
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(33,2): warning C4273: 'PsLookupProcessByProcessId': inconsistent dll linkage
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.19041.0\km\ntifs.h(17463,1): message : see previous definition of 'PsLookupProcessByProcessId'
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(40,29): warning C4047: '=': 'ULONG' differs in levels of indirection from 'HANDLE'
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(42,19): warning C4047: 'function': 'wchar_t *' differs in levels of indirection from 'wchar_t *[512]'
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(42,13): warning C4024: 'wcscpy': different types for formal and actual parameter 1
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(57,39): warning C4047: '==': 'ULONG' differs in levels of indirection from 'HANDLE'
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(74,28): warning C4047: 'function': 'const wchar_t *' differs in levels of indirection from 'wchar_t *[512]'
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(74,22): warning C4024: 'wcsstr': different types for formal and actual parameter 1
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(97,6): warning C4047: 'function': 'PSIZE_T' differs in levels of indirection from 'PSIZE_T *'
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(97,6): warning C4024: 'MmCopyVirtualMemory': different types for formal and actual parameter 7
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(107,1): warning C4047: 'function': 'PSIZE_T' differs in levels of indirection from 'PSIZE_T *'
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(106,1): warning C4024: 'MmCopyVirtualMemory': different types for formal and actual parameter 7
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(147,9): warning C4100: 'ThreadId': unreferenced formal parameter
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(146,9): warning C4100: 'ProcessId': unreferenced formal parameter
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(172,53): warning C4022: 'PsLookupProcessByProcessId': pointer mismatch for actual parameter 1
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(186,53): warning C4022: 'PsLookupProcessByProcessId': pointer mismatch for actual parameter 1
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(203,53): warning C4022: 'PsLookupProcessByProcessId': pointer mismatch for actual parameter 1
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(206,44): warning C4022: 'WriteVirtualProcessMemory': pointer mismatch for actual parameter 2
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(206,60): warning C4022: 'WriteVirtualProcessMemory': pointer mismatch for actual parameter 3
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(217,53): warning C4022: 'PsLookupProcessByProcessId': pointer mismatch for actual parameter 1
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(220,44): warning C4022: 'WriteVirtualProcessMemory': pointer mismatch for actual parameter 2
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(220,60): warning C4022: 'WriteVirtualProcessMemory': pointer mismatch for actual parameter 3
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(277,43): warning C4022: 'InjectX64Dll': pointer mismatch for actual parameter 1
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(291,43): warning C4022: 'InjectX86Dll': pointer mismatch for actual parameter 1
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(154,38): warning C4100: 'DeviceObject': unreferenced formal parameter
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(325,32): warning C4100: 'DeviceObject': unreferenced formal parameter
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(334,31): warning C4100: 'pDriverObject': unreferenced formal parameter
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Driver.c(343,68): warning C4100: 'pRegistryPath': unreferenced formal parameter
   Injection.c
-C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Injection.c(140,73): warning C4100: 'arg4': unreferenced formal parameter
-C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Injection.c(140,61): warning C4100: 'arg3': unreferenced formal parameter
-C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Injection.c(140,49): warning C4100: 'arg2': unreferenced formal parameter
-C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Injection.c(140,37): warning C4100: 'arg1': unreferenced formal parameter
-C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Injection.c(145,67): warning C4100: 'SysArg2': unreferenced formal parameter
-C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Injection.c(145,52): warning C4100: 'SysArg1': unreferenced formal parameter
-C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\Injection.c(354,61): warning C4152: nonstandard extension, function/data pointer conversion in expression
-  TitaniumDriver.vcxproj -> C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\x64\Release\TitaniumDriver.sys
-C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\TitaniumDriver.vcxproj(113,5): warning MSB4011: "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\BuildCustomizations\masm.props" cannot be imported again. It was already imported at "C:\Program Files (x86)\Windows Kits\10\build\WindowsDriver.Shared.props (352,3)". This is most likely a build authoring error. This subsequent import will be ignored. 
-C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\TitaniumDriver.vcxproj(221,5): warning MSB4011: "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\BuildCustomizations\masm.targets" cannot be imported again. It was already imported at "C:\Program Files (x86)\Windows Kits\10\build\WindowsDriver.common.targets (1878,3)". This is most likely a build authoring error. This subsequent import will be ignored. 
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Injection.c(140,73): warning C4100: 'arg4': unreferenced formal parameter
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Injection.c(140,61): warning C4100: 'arg3': unreferenced formal parameter
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Injection.c(140,49): warning C4100: 'arg2': unreferenced formal parameter
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Injection.c(140,37): warning C4100: 'arg1': unreferenced formal parameter
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Injection.c(145,67): warning C4100: 'SysArg2': unreferenced formal parameter
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Injection.c(145,52): warning C4100: 'SysArg1': unreferenced formal parameter
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\Injection.c(360,61): warning C4152: nonstandard extension, function/data pointer conversion in expression
+  Generating Code...
+  TitaniumDriver.vcxproj -> C:\Users\alber\Desktop\Titanium\Titanium\x64\Release\TitaniumDriver.sys
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\TitaniumDriver.vcxproj(113,5): warning MSB4011: "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\BuildCustomizations\masm.props" cannot be imported again. It was already imported at "C:\Program Files (x86)\Windows Kits\10\build\WindowsDriver.Shared.props (352,3)". This is most likely a build authoring error. This subsequent import will be ignored. 
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\TitaniumDriver.vcxproj(221,5): warning MSB4011: "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\BuildCustomizations\masm.targets" cannot be imported again. It was already imported at "C:\Program Files (x86)\Windows Kits\10\build\WindowsDriver.common.targets (1878,3)". This is most likely a build authoring error. This subsequent import will be ignored. 
   Done Adding Additional Store
-  Successfully signed: C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\x64\Release\TitaniumDriver.sys
+  Successfully signed: C:\Users\alber\Desktop\Titanium\Titanium\x64\Release\TitaniumDriver.sys
   
   Inf2Cat task was skipped as there were no inf files to process
   
-C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\TitaniumDriver.vcxproj(113,5): warning MSB4011: "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\BuildCustomizations\masm.props" cannot be imported again. It was already imported at "C:\Program Files (x86)\Windows Kits\10\build\WindowsDriver.Shared.props (352,3)". This is most likely a build authoring error. This subsequent import will be ignored. 
-C:\Users\alber\Desktop\PC\Programming\C++\Titanium\Titanium\TitaniumDriver\TitaniumDriver.vcxproj(221,5): warning MSB4011: "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\BuildCustomizations\masm.targets" cannot be imported again. It was already imported at "C:\Program Files (x86)\Windows Kits\10\build\WindowsDriver.common.targets (1878,3)". This is most likely a build authoring error. This subsequent import will be ignored. 
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\TitaniumDriver.vcxproj(113,5): warning MSB4011: "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\BuildCustomizations\masm.props" cannot be imported again. It was already imported at "C:\Program Files (x86)\Windows Kits\10\build\WindowsDriver.Shared.props (352,3)". This is most likely a build authoring error. This subsequent import will be ignored. 
+C:\Users\alber\Desktop\Titanium\Titanium\TitaniumDriver\TitaniumDriver.vcxproj(221,5): warning MSB4011: "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\BuildCustomizations\masm.targets" cannot be imported again. It was already imported at "C:\Program Files (x86)\Windows Kits\10\build\WindowsDriver.common.targets (1878,3)". This is most likely a build authoring error. This subsequent import will be ignored. 

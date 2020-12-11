@@ -251,16 +251,22 @@ VOID Injector_OnLoadImageNotifyRoutine(PUNICODE_STRING FullImageName, HANDLE Pro
     // Loads in x64 processes
     if (wcsstr(FullImageName->Buffer, L"\\System32\\ntdll.dll"))
     {
-        PVOID LdrLoadDllRoutineAddress = FindExportedRoutineByName(ImageInfo->ImageBase, &LdrLoadDllRoutineName);
         PTITANIUM_INJECTION_INFO InjectionInfo = FindInjectionInfo(ProcessId);
+        if (!InjectionInfo)
+            return;
+
+        PVOID LdrLoadDllRoutineAddress = FindExportedRoutineByName(ImageInfo->ImageBase, &LdrLoadDllRoutineName);
 
         if (!InjectionInfo->IsProcessWow64)
             InjectionInfo->LdrLoadDllRoutine = (PLDR_LOAD_DLL)LdrLoadDllRoutineAddress;
     }
     if (wcsstr(FullImageName->Buffer, L"\\SysWOW64\\ntdll.dll"))
     {
-        PVOID LdrLoadDllRoutineAddress = FindExportedRoutineByName(ImageInfo->ImageBase, &LdrLoadDllRoutineName);
         PTITANIUM_INJECTION_INFO InjectionInfo = FindInjectionInfo(ProcessId);
+        if (!InjectionInfo)
+            return;
+
+        PVOID LdrLoadDllRoutineAddress = FindExportedRoutineByName(ImageInfo->ImageBase, &LdrLoadDllRoutineName);
 
         InjectionInfo->IsProcessWow64 = TRUE;
         InjectionInfo->LdrLoadDllRoutine = (PLDR_LOAD_DLL)LdrLoadDllRoutineAddress;

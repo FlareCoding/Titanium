@@ -35,6 +35,8 @@ extern NTSTATUS PsLookupProcessByProcessId(
 PTitaniumTargetImageInfo CreateTitaniumProcessInfo(HANDLE ProcessId, wchar_t* Name)
 {
 	PTitaniumTargetImageInfo Info = ExAllocatePoolWithTag(NonPagedPoolNx, sizeof(TitaniumTargetImageInfo), TITANIUM_PROCESS_INFO_MEMORY_TAG);
+	if (!Info)
+		return NULL;
 
 	RtlZeroMemory(Info, sizeof(TitaniumTargetImageInfo));
 	Info->ProcessID = ProcessId;
@@ -135,7 +137,7 @@ void PcreateProcessNotifyRoutine(
 {
 	if (!Create)
 	{
-		while (FindTitaniumProcessInfoByPID(ProcessId))
+		if (FindTitaniumProcessInfoByPID(ProcessId))
 			RemoveTitaniumProcessInfo(ProcessId);
 	}
 

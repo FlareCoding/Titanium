@@ -45,6 +45,8 @@ UCHAR NormalRoutinex86Assembly[52] =
 PTITANIUM_INJECTION_INFO CreateInjectionInfo(HANDLE ProcessId)
 {
     PTITANIUM_INJECTION_INFO Info = ExAllocatePoolWithTag(NonPagedPoolNx, sizeof(TITANIUM_INJECTION_INFO), TITANIUM_MEMORY_TAG);
+    if (!Info)
+        return NULL;
 
     RtlZeroMemory(Info, sizeof(TITANIUM_INJECTION_INFO));
     Info->ProcessId = ProcessId;
@@ -59,14 +61,21 @@ PTITANIUM_INJECTION_INFO FindInjectionInfo(HANDLE ProcessId)
 {
     PLIST_ENTRY NextEntry = InjectionInformationListHead.Flink;
 
-    while (NextEntry != &InjectionInformationListHead)
+    __try
     {
-        PTITANIUM_INJECTION_INFO InjectionInfo = CONTAINING_RECORD(NextEntry, TITANIUM_INJECTION_INFO, ListEntry);
+        while (NextEntry != &InjectionInformationListHead)
+        {
+            PTITANIUM_INJECTION_INFO InjectionInfo = CONTAINING_RECORD(NextEntry, TITANIUM_INJECTION_INFO, ListEntry);
 
-        if (InjectionInfo->ProcessId == ProcessId)
-            return InjectionInfo;
+            if (InjectionInfo->ProcessId == ProcessId)
+                return InjectionInfo;
 
-        NextEntry = NextEntry->Flink;
+            NextEntry = NextEntry->Flink;
+        }
+    }
+    __except (EXCEPTION_EXECUTE_HANDLER)
+    {
+        return NULL;
     }
 
     return NULL;
